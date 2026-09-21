@@ -163,8 +163,17 @@
   .focus-card p{font-size:.9rem; margin-top:6px;}
 
   .tracker-table input[type="checkbox"]{width:17px; height:17px; accent-color:var(--good); cursor:pointer;}
+  .tracker-table input[type="checkbox"]:disabled{opacity:.55; cursor:not-allowed;}
   .tracker-table td, .tracker-table th{text-align:center;}
   .tracker-table td:first-child, .tracker-table th:first-child{text-align:left;}
+
+  .week-nav{display:flex; align-items:center; gap:12px; margin-bottom:2px;}
+  .week-nav button{
+    background:var(--surface); border:1px solid var(--line); color:var(--text); width:30px; height:30px; border-radius:8px;
+    font-size:1rem; cursor:pointer; line-height:1;
+  }
+  .week-nav button:disabled{opacity:.35; cursor:not-allowed;}
+  .week-nav #week-label{font-size:.85rem; color:var(--text-dim);}
 
   footer{padding-block:28px 60px; color:var(--text-dim); font-size:.82rem;}
   footer p{max-width:65ch;}
@@ -206,9 +215,6 @@
     <input id="auth-password" type="password" autocomplete="current-password" />
     <button id="auth-submit">Sign in</button>
     <div id="auth-error"></div>
-    <div class="toggle-mode">
-      <span id="toggle-text">No account yet?</span> <a id="toggle-link">Create one</a>
-    </div>
   </div>
 </div>
 
@@ -483,7 +489,12 @@
 
   <section id="tracker">
     <div class="section-head"><span class="eyebrow">Accountability</span><h2>Weekly Tracker</h2></div>
-    <p style="color:var(--text-dim); font-size:.9rem; margin-top:-10px;" id="tracker-status">Syncing…</p>
+    <div class="week-nav">
+      <button id="week-prev" aria-label="Previous week">‹</button>
+      <span id="week-label" class="mono"></span>
+      <button id="week-next" aria-label="Next week">›</button>
+    </div>
+    <p style="color:var(--text-dim); font-size:.9rem; margin:6px 0 12px;" id="tracker-status">Syncing…</p>
     <div class="table-scroll">
       <table class="tracker-table">
         <thead><tr><th>Habit</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
@@ -504,7 +515,7 @@
   var SUPABASE_URL = "https://wccactmxpjmeyhrmbguu.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjY2FjdG14cGptZXlocm1iZ3V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NjczNTIsImV4cCI6MjEwNTU0MzM1Mn0.cQYe3F2zeBpah7g2_f40h5D0D7Oun7EcO0jKCn85h8M";
   // ===========================================================================
-
+  
   var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var authGate = document.getElementById('auth-gate');
@@ -514,27 +525,7 @@
   var submitBtn = document.getElementById('auth-submit');
   var errorBox = document.getElementById('auth-error');
   var authSub = document.getElementById('auth-sub');
-  var toggleLink = document.getElementById('toggle-link');
-  var toggleText = document.getElementById('toggle-text');
-  var mode = 'signin'; // or 'signup'
   var currentUser = null;
-
-  function setMode(m){
-    mode = m;
-    if (m === 'signin'){
-      submitBtn.textContent = 'Sign in';
-      authSub.textContent = 'Sign in to view your plan and tracker.';
-      toggleText.textContent = 'No account yet?';
-      toggleLink.textContent = 'Create one';
-    } else {
-      submitBtn.textContent = 'Create account';
-      authSub.textContent = 'Create your account to get started.';
-      toggleText.textContent = 'Already have an account?';
-      toggleLink.textContent = 'Sign in';
-    }
-    errorBox.textContent = '';
-  }
-  toggleLink.addEventListener('click', function(){ setMode(mode === 'signin' ? 'signup' : 'signin'); });
 
   submitBtn.addEventListener('click', async function(){
     var email = emailInput.value.trim();
@@ -542,20 +533,10 @@
     if (!email || !password){ errorBox.textContent = 'Enter email and password.'; return; }
     submitBtn.disabled = true;
     errorBox.textContent = '';
-    var result;
-    if (mode === 'signin'){
-      result = await supabase.auth.signInWithPassword({ email: email, password: password });
-    } else {
-      result = await supabase.auth.signUp({ email: email, password: password });
-    }
+    var result = await supabase.auth.signInWithPassword({ email: email, password: password });
     submitBtn.disabled = false;
     if (result.error){
       errorBox.textContent = result.error.message;
-      return;
-    }
-    if (mode === 'signup' && !result.data.session){
-      errorBox.textContent = 'Account created — check your email to confirm, then sign in.';
-      setMode('signin');
       return;
     }
     onAuthed(result.data.user);
@@ -602,14 +583,36 @@
     });
   })();
 
-  // ====== Tracker backed by Supabase (cross-device memory) ======
+  // ====== Tracker backed by Supabase — one record per week, weeks start Monday ======
   var habits = ['Workout completed','Protein target hit (160g)','Study target hit','8k+ steps','Slept 7h+','Water 3L+'];
   var days = ['mon','tue','wed','thu','fri','sat','sun'];
   var trackerState = {};
   var saveTimer = null;
 
+  function mondayOf(d){
+    var dt = new Date(d);
+    var day = dt.getDay(); // 0=Sun..6=Sat
+    var diff = (day === 0 ? -6 : 1 - day); // shift back to Monday
+    dt.setDate(dt.getDate() + diff);
+    dt.setHours(0,0,0,0);
+    return dt;
+  }
+  function toISODate(d){
+    var yyyy = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
+    return yyyy + '-' + mm + '-' + dd;
+  }
+  function fmtLabel(mondayDate){
+    var end = new Date(mondayDate); end.setDate(end.getDate()+6);
+    var opts = { month:'short', day:'numeric' };
+    return 'Week of ' + mondayDate.toLocaleDateString(undefined,opts) + ' – ' + end.toLocaleDateString(undefined,opts);
+  }
+
+  var currentWeekStart = toISODate(mondayOf(new Date()));
+  var viewingWeekStart = currentWeekStart;
+
   function renderTracker(){
     var tbody = document.getElementById('tracker-body');
+    var isCurrent = (viewingWeekStart === currentWeekStart);
     tbody.innerHTML = '';
     habits.forEach(function(habit, hi){
       var tr = document.createElement('tr');
@@ -620,6 +623,7 @@
         var td = document.createElement('td');
         var cb = document.createElement('input');
         cb.type = 'checkbox';
+        cb.disabled = !isCurrent;
         var key = hi + '-' + day;
         cb.checked = !!trackerState[key];
         cb.addEventListener('change', function(){
@@ -631,15 +635,19 @@
       });
       tbody.appendChild(tr);
     });
+    document.getElementById('week-label').textContent = fmtLabel(new Date(viewingWeekStart + 'T00:00:00'));
+    document.getElementById('week-next').disabled = isCurrent;
   }
 
   function scheduleSave(){
+    if (viewingWeekStart !== currentWeekStart) return; // safety: never write to a past week
     var statusEl = document.getElementById('tracker-status');
     statusEl.textContent = 'Saving…';
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(async function(){
       var { error } = await supabase.from('tracker_state').upsert({
         user_id: currentUser.id,
+        week_start: currentWeekStart,
         state: trackerState,
         updated_at: new Date().toISOString()
       });
@@ -647,22 +655,42 @@
     }, 500);
   }
 
-  async function initTracker(){
+  async function loadWeek(weekStart){
     var statusEl = document.getElementById('tracker-status');
     statusEl.textContent = 'Loading…';
     var { data, error } = await supabase
       .from('tracker_state')
       .select('state')
       .eq('user_id', currentUser.id)
+      .eq('week_start', weekStart)
       .maybeSingle();
     if (error){
       statusEl.textContent = 'Could not load tracker: ' + error.message;
       trackerState = {};
     } else {
       trackerState = (data && data.state) || {};
-      statusEl.textContent = 'Synced across your devices.';
+      statusEl.textContent = (weekStart === currentWeekStart) ? 'Synced across your devices.' : 'Viewing a past week (read-only).';
     }
     renderTracker();
+  }
+
+  document.getElementById('week-prev').addEventListener('click', function(){
+    var d = new Date(viewingWeekStart + 'T00:00:00');
+    d.setDate(d.getDate() - 7);
+    viewingWeekStart = toISODate(d);
+    loadWeek(viewingWeekStart);
+  });
+  document.getElementById('week-next').addEventListener('click', function(){
+    if (viewingWeekStart === currentWeekStart) return;
+    var d = new Date(viewingWeekStart + 'T00:00:00');
+    d.setDate(d.getDate() + 7);
+    viewingWeekStart = toISODate(d);
+    loadWeek(viewingWeekStart);
+  });
+
+  async function initTracker(){
+    viewingWeekStart = currentWeekStart;
+    await loadWeek(currentWeekStart);
   }
 </script>
 
