@@ -132,8 +132,10 @@
   .tag-mod{background:var(--gold-soft); color:var(--gold);}
   .tag-mob{background:var(--cyan-soft); color:var(--cyan);}
   .tag-rest{background:var(--good-soft); color:var(--good);}
-  details ul{margin:10px 0 2px; padding-left:18px;}
+  details ul, details ol{margin:10px 0 2px; padding-left:18px;}
   details li{margin-bottom:4px; font-size:.92rem;}
+  .recipe-macro{font-family:var(--font-mono); font-size:.78rem; color:var(--cyan); margin:6px 0 0;}
+  .recipe-list details{margin-bottom:8px;}
 
   /* macro bars */
   .macro-summary{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:22px;}
@@ -462,16 +464,146 @@
     </div>
 
     <h3 style="margin-top:30px;">Air Fryer Rotation</h3>
-    <p style="color:var(--text-dim); font-size:.9rem;">High-protein, low-oil versions of food you already eat.</p>
-    <div class="recipe-grid" style="margin-top:14px;">
-      <div class="recipe-card"><span class="rnum">01</span><h4>Paneer Tikka</h4><p>Marinated paneer, capsicum, onion — 12 min @ 190°C.</p><span class="macro">~20g protein/serving</span></div>
-      <div class="recipe-card"><span class="rnum">02</span><h4>Crispy Soya Chunks</h4><p>Soaked nutrela + tandoori masala + 1 tsp oil, 10 min. Cheapest protein hack in the kitchen.</p><span class="macro">~26g protein/100g dry</span></div>
-      <div class="recipe-card"><span class="rnum">03</span><h4>Sprouts Chaat</h4><p>Moong sprouts, onion, tomato, chaat masala — air-fry 8 min for crunch, toss cold.</p><span class="macro">~14g protein</span></div>
-      <div class="recipe-card"><span class="rnum">04</span><h4>Besan Chilla Rolls</h4><p>Chickpea flour batter, air-fry 10 min, roll with mint chutney.</p><span class="macro">~12g protein</span></div>
-      <div class="recipe-card"><span class="rnum">05</span><h4>Tandoori Tofu Skewers</h4><p>Cubed tofu marinated in curd + tandoori masala, skewered with peppers.</p><span class="macro">~18g protein</span></div>
-      <div class="recipe-card"><span class="rnum">06</span><h4>Roasted Makhana &amp; Papad</h4><p>Foxnuts + 2 min papad, zero oil — replaces the biscuit-tin habit at tea time.</p><span class="macro">Low-cal snack</span></div>
-      <div class="recipe-card"><span class="rnum">07</span><h4>Sweet Potato Wedges</h4><p>15 min, light spice — a clean post-workout carb refill on heavy leg days.</p><span class="macro">Carb refill</span></div>
-      <div class="recipe-card"><span class="rnum">08</span><h4>Egg Bhurji + Toast</h4><p>Stovetop bhurji, multigrain toast crisped in the fryer instead of buttered on a pan.</p><span class="macro">~24g protein</span></div>
+    <p style="color:var(--text-dim); font-size:.9rem;">High-protein, low-oil, low-effort — everything here is under 15 minutes active + cook time, using stuff already in your kitchen or gym-bag pantry. Macros are per serving.</p>
+
+    <div class="recipe-list" style="margin-top:14px;">
+
+      <details>
+        <summary>01 — Paneer Tikka <span class="tag tag-mob">10 min · Easy</span></summary>
+        <p class="recipe-macro">245 kcal · 22g protein · 6g carbs · 15g fat</p>
+        <ol>
+          <li>Cube 150g paneer, roughly chop 1 onion + 1 capsicum into similar-size pieces.</li>
+          <li>Toss everything in 2 tbsp curd + 1 tsp tandoori masala + ½ tsp oil + salt (skip marinating time if rushed — even a quick toss works).</li>
+          <li>Skewer or spread in the basket. Air-fry at 190°C for 10 min, flipping/shaking once at the 5-min mark.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>02 — Crispy Soya Chunks <span class="tag tag-rest">10 min · Cheapest protein</span></summary>
+        <p class="recipe-macro">190 kcal · 26g protein · 9g carbs · 4g fat <span class="mono" style="color:var(--text-dim);">(per 100g dry chunks)</span></p>
+        <ol>
+          <li>Boil a handful of soya chunks 5 min, drain and squeeze out all water firmly (this is the only step that matters for crispiness).</li>
+          <li>Toss in curd + tandoori masala + 1 tsp oil.</li>
+          <li>Air-fry at 200°C for 10 min, shaking the basket halfway.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>03 — Sprouts Chaat <span class="tag tag-rest">8 min · No real cooking</span></summary>
+        <p class="recipe-macro">160 kcal · 14g protein · 20g carbs · 3g fat</p>
+        <ol>
+          <li>Toss a cup of moong sprouts with chopped onion, tomato, chaat masala, lemon, and a few drops of oil.</li>
+          <li>Air-fry 6–8 min at 190°C just to add crunch and warm it through.</li>
+          <li>Toss again and eat — works cold too if you skip the air fryer step entirely.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>04 — Besan Chilla Rolls <span class="tag tag-mob">10 min · Easy</span></summary>
+        <p class="recipe-macro">180 kcal · 12g protein · 22g carbs · 6g fat</p>
+        <ol>
+          <li>Mix besan + water + turmeric + salt + chopped onion into a thin batter.</li>
+          <li>Pour a thin layer onto parchment in the air-fryer basket.</li>
+          <li>Air-fry 8–10 min at 180°C, then roll with mint chutney.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>05 — Tandoori Tofu Skewers <span class="tag tag-mob">12 min · Easy</span></summary>
+        <p class="recipe-macro">210 kcal · 18g protein · 7g carbs · 12g fat</p>
+        <ol>
+          <li>Press tofu briefly to remove excess water, cube it.</li>
+          <li>Marinate in curd + tandoori masala for 10 min (optional — still good without it).</li>
+          <li>Skewer with bell peppers, air-fry 190°C for 12 min, turning once.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>06 — Roasted Makhana &amp; Papad <span class="tag tag-rest">5 min · Zero effort</span></summary>
+        <p class="recipe-macro">120 kcal · 4g protein · 18g carbs · 4g fat</p>
+        <ol>
+          <li>Toss a cup of makhana (foxnuts) with a few drops of ghee and a pinch of chaat masala.</li>
+          <li>Air-fry 5 min at 160°C, shaking once.</li>
+          <li>Roast a papad separately for 90 seconds — replaces the biscuit-tin habit at tea time.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>07 — Sweet Potato Wedges <span class="tag tag-mod">15 min · Post-leg-day carb refill</span></summary>
+        <p class="recipe-macro">160 kcal · 3g protein · 34g carbs · 2g fat</p>
+        <ol>
+          <li>Cut one sweet potato into wedges, toss with ½ tsp oil, paprika, and salt.</li>
+          <li>Air-fry 180°C for 15 min, shaking the basket halfway through.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>08 — Egg Bhurji + Toast <span class="tag tag-mob">7 min · Easy</span></summary>
+        <p class="recipe-macro">280 kcal · 24g protein · 18g carbs · 13g fat</p>
+        <ol>
+          <li>Scramble 3 eggs stovetop with onion, tomato, chili, and turmeric (2–3 min — this part isn't air-fried).</li>
+          <li>While that cooks, air-fry 2 slices of multigrain bread at 180°C for 3 min instead of buttering on a pan.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>09 — Egg White Bites <span class="tag tag-rest">10 min · Near-zero fat</span></summary>
+        <p class="recipe-macro">130 kcal · 18g protein · 3g carbs · 4g fat</p>
+        <ol>
+          <li>Whisk 4 egg whites with chopped spinach/capsicum, salt, and pepper.</li>
+          <li>Pour into silicone muffin cups (or a small oven-safe bowl).</li>
+          <li>Air-fry 160°C for 10 min. Make a batch of 6 on Sunday, grab 2–3 as a snack all week.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>10 — Paneer &amp; Corn Cutlets <span class="tag tag-mob">12 min · Easy</span></summary>
+        <p class="recipe-macro">220 kcal · 16g protein · 16g carbs · 11g fat</p>
+        <ol>
+          <li>Mash 100g paneer with a handful of boiled corn, 1 tbsp besan, and spices.</li>
+          <li>Shape into 4–5 small patties.</li>
+          <li>Air-fry 190°C for 10–12 min, flipping once.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>11 — Rajma Tikki <span class="tag tag-mod">12 min · Uses leftover rajma</span></summary>
+        <p class="recipe-macro">200 kcal · 15g protein · 24g carbs · 5g fat</p>
+        <ol>
+          <li>Mash a cup of boiled/leftover rajma with chopped onion, 1 tbsp besan, and spices.</li>
+          <li>Shape into patties.</li>
+          <li>Air-fry 190°C for 12 min, flipping halfway.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>12 — Stuffed Capsicum (Paneer + Chana) <span class="tag tag-mod">12 min · High protein</span></summary>
+        <p class="recipe-macro">250 kcal · 20g protein · 15g carbs · 13g fat</p>
+        <ol>
+          <li>Halve a capsicum and deseed it.</li>
+          <li>Mix crumbled paneer + boiled chana + spices, stuff into the halves.</li>
+          <li>Air-fry 180°C for 10–12 min until the capsicum softens slightly.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>13 — Curd-Marinated Mushroom Skewers <span class="tag tag-rest">8 min · Low-cal</span></summary>
+        <p class="recipe-macro">90 kcal · 10g protein · 5g carbs · 3g fat</p>
+        <ol>
+          <li>Marinate whole button mushrooms in curd + tandoori masala for 10 min (or skip and go straight in).</li>
+          <li>Skewer, air-fry 190°C for 8 min, shaking once.</li>
+        </ol>
+      </details>
+
+      <details>
+        <summary>14 — Multigrain Protein Sandwich <span class="tag tag-mob">6 min · Fastest one here</span></summary>
+        <p class="recipe-macro">300 kcal · 20g protein · 28g carbs · 11g fat</p>
+        <ol>
+          <li>Mash a boiled egg or paneer with a little curd and spices, spread between 2 slices of multigrain bread.</li>
+          <li>Brush the outside lightly with oil, air-fry 180°C for 6 min, flipping once.</li>
+        </ol>
+      </details>
+
     </div>
   </section>
 
@@ -512,10 +644,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ====== SUPABASE CONFIG — fill these in after creating your project ======
-  var SUPABASE_URL = "https://wccactmxpjmeyhrmbguu.supabase.co";
-  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndjY2FjdG14cGptZXlocm1iZ3V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5NjczNTIsImV4cCI6MjEwNTU0MzM1Mn0.cQYe3F2zeBpah7g2_f40h5D0D7Oun7EcO0jKCn85h8M";
+  var SUPABASE_URL = "YOUR_SUPABASE_URL";
+  var SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
   // ===========================================================================
-  
+
   var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var authGate = document.getElementById('auth-gate');
